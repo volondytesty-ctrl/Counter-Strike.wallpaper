@@ -1,0 +1,62 @@
+// ============================================
+// OBOI.TOP — Service Worker
+// Кэширует страницы и картинки для офлайн-работы
+// ============================================
+
+const CACHE_NAME = 'oboi-top-v1';
+const PAGES = [
+  './',
+  './index.html',
+  './phone.html',
+  './tablet.html',
+  './banner.png',
+  './manifest.json'
+];
+
+// Установка — кэшируем основные страницы
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('[SW] Кэширую страницы');
+      return cache.addAll(PAGES).catch(err => {
+        console.warn('[SW] Не всё удалось закэшировать:', err);
+      });
+    })
+  );
+  self.skipWaiting();
+});
+
+// Активация — чистим старые версии кэша
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+// Обработка запросов — сначала кэш, потом сеть
+self.addEventListener('fetch', event => {
+  // Игнорируем запросы к другим доменам
+  if (!event.request.url.startsWith(self.location.origin)) return;
+
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      // Если есть в кэше — отдаём сразу, параллельно обновляем из сети
+      const fetchPromise = fetch(event.request).then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return response;
+      }).catch(() => cached); // Если сети нет — отдаём из кэша
+
+      return cached || fetchPromise;
+    })
+  );
+});
