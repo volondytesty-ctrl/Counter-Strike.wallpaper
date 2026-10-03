@@ -112,7 +112,6 @@
 <footer>© <span id="year"></span> OBOI.TOP — Created by <b>Ash</b> & DeepSeek</footer>
 
 <script>
-/* ============ ПОДКЛАДКИ ============ */
 document.querySelectorAll('.sub-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
@@ -123,7 +122,6 @@ document.querySelectorAll('.sub-tab').forEach(tab => {
   });
 });
 
-/* ============ CS 2 ============ */
 const categories = [
   { name:"Разные карты", folder:"Разные карты", files:[1,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107]},
   { name:"Зимушка", folder:"Зимушка", range:[1,19] },
@@ -208,9 +206,7 @@ function applyFilters() {
 
 searchInput.addEventListener('input', applyFilters);
 
-/* ============ РАЗНОЕ ============ */
 const MISC_COUNT = 20;
-
 const miscWallpapers = [];
 for (let i = 1; i <= MISC_COUNT; i++) {
   const fileName = "1 (" + i + ").jpg";
@@ -251,7 +247,6 @@ function renderMisc(list) {
   });
 }
 
-/* ============ ЗАПУСК ============ */
 document.getElementById('year').textContent = new Date().getFullYear();
 renderFilters();
 render(wallpapers);
