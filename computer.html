@@ -4,11 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OBOI.TOP — Обои для компьютера</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#66c0f4">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="OBOI.TOP">
 <style>
   :root { --bg-1:#0a0a0f; --bg-2:#14121f; --bg-3:#1a1a2e; --accent:#66c0f4; --accent-2:#a64bff; --card:#16202d; --card-hover:#1e2f42; --text:#c7d5e0; --text-dim:#8f98a0; --green:#6fbf4a; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -16,14 +11,10 @@
   header { position:sticky; top:0; z-index:100; background:rgba(10,10,15,.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(102,192,244,.15); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
   .banner { height:50px; width:auto; border-radius:8px; display:block; transition:transform .3s; }
   .banner:hover { transform:scale(1.04); }
-  .nav-tabs { display:flex; gap:6px; margin:0 auto; }
+  .nav-tabs { display:flex; gap:6px; position:absolute; left:50%; transform:translateX(-50%); }
   .nav-tab { padding:9px 18px; border-radius:8px; background:transparent; border:1px solid transparent; color:var(--text-dim); font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; transition:.25s; }
   .nav-tab:hover { color:var(--text); background:rgba(102,192,244,.08); }
   .nav-tab.active { color:#fff; background:linear-gradient(90deg,rgba(102,192,244,.25),rgba(166,75,255,.25)); border-color:rgba(102,192,244,.4); }
-
-  @media (min-width: 900px) {
-    .nav-tabs { position:absolute; left:50%; transform:translateX(-50%); margin:0; }
-  }
 
   /* Подвкладки внутри Компьютера */
   .sub-tabs { display:flex; gap:8px; justify-content:center; padding:16px 24px 0; flex-wrap:wrap; }
@@ -60,6 +51,8 @@
   .overlay .download-btn { width:100%; justify-content:center; }
   .empty { text-align:center; padding:80px 20px; color:var(--text-dim); font-size:18px; display:none; }
   .empty.show { display:block; }
+  .empty-placeholder { text-align:center; padding:100px 20px; color:var(--text-dim); font-size:16px; }
+  .empty-placeholder .big { font-size:64px; margin-bottom:20px; }
   footer { text-align:center; padding:30px 20px; color:var(--text-dim); font-size:13px; border-top:1px solid rgba(102,192,244,.1); }
   footer b { color:var(--accent); }
 
@@ -107,21 +100,20 @@
     <div class="empty" id="empty">😔 Ничего не найдено</div>
   </div>
 
-  <!-- ПАНЕЛЬ 2: Разное -->
-  <div class="panel" id="panel-misc">
-    <div class="page-title">
-      <h1>🎨 Разное</h1>
-      <p>Обои из Pinterest: эстетика, космос, города, абстракция.</p>
+<script>
+  <script>
+    <div class="empty-placeholder">
+      <div class="big">🎨</div>
+      <b>Раздел «Разное» скоро появится</b>
+      <p style="margin-top:12px;">Здесь будут обои из Pinterest: эстетика, космос, города, абстракция.</p>
     </div>
-    <div class="grid" id="misc-grid"></div>
-    <div class="empty" id="misc-empty">😔 Ничего не найдено</div>
   </div>
 
 </main>
 
 <footer>© <span id="year"></span> OBOI.TOP — Created by <b>Ash</b> & DeepSeek</footer>
 
-<script>
+
 /* ================= ПОДКЛАДКИ ================= */
 document.querySelectorAll('.sub-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -217,68 +209,9 @@ function applyFilters() {
 }
 
 searchInput.addEventListener('input', applyFilters);
-
-/* ================= РАЗНОЕ =================
-   ЗАМЕНИ MISC_COUNT на реальное количество обоев в папке wallpaper/Разное/
-*/
-const MISC_COUNT = 20;
-
-const miscWallpapers = [];
-for (let i = 1; i <= MISC_COUNT; i++) {
-  const fileName = "1 (" + i + ").jpg";
-  miscWallpapers.push({
-    title: "Разное " + i,
-    img: "wallpaper/" + encodeURIComponent("Разное") + "/" + encodeURIComponent(fileName),
-    download: "wallpaper/" + encodeURIComponent("Разное") + "/" + encodeURIComponent(fileName)
-  });
-}
-
-const miscGrid = document.getElementById('misc-grid');
-const miscEmpty = document.getElementById('misc-empty');
-
-function renderMisc(list) {
-  miscGrid.innerHTML = '';
-  if (!list.length) { miscEmpty.classList.add('show'); return; }
-  miscEmpty.classList.remove('show');
-  list.forEach(w => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="thumb">
-        <img src="${w.img}" alt="${w.title}" loading="lazy">
-        <div class="overlay">
-          <a class="download-btn" href="${w.download}" download onclick="event.stopPropagation()">⬇️ Скачать</a>
-        </div>
-      </div>
-      <div class="card-info">
-        <span class="card-title">${w.title}</span>
-        <span class="card-cat">РАЗНОЕ</span>
-      </div>`;
-    card.addEventListener('click', () => {
-      const a = document.createElement('a');
-      a.href = w.download; a.download = w.title + '.jpg';
-      document.body.appendChild(a); a.click(); a.remove();
-    });
-    miscGrid.appendChild(card);
-  });
-}
-
-renderMisc(miscWallpapers);
-
-/* ================= ИНИЦИАЛИЗАЦИЯ ================= */
 document.getElementById('year').textContent = new Date().getFullYear();
 renderFilters();
 render(wallpapers);
-</script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('[PWA] SW зарегистрирован:', reg.scope))
-        .catch(err => console.warn('[PWA] Ошибка SW:', err));
-    });
-  }
 </script>
 
 </body>
