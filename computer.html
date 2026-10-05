@@ -66,6 +66,33 @@
     .grid { grid-template-columns:1fr; gap:16px; }
     .container { padding:16px 14px 40px; }
   }
+
+  /* ===== Кнопка Рандом ===== */
+  .random-btn { position:fixed; bottom:24px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); border:none; color:#fff; font-size:28px; cursor:pointer; box-shadow:0 8px 24px rgba(102,192,244,.4),0 0 0 1px rgba(255,255,255,.1); z-index:500; transition:transform .3s,box-shadow .3s; display:flex; align-items:center; justify-content:center; }
+  .random-btn:hover { transform:scale(1.12) rotate(15deg); box-shadow:0 12px 32px rgba(102,192,244,.6); }
+  .random-btn:active { transform:scale(.95); }
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:1000; align-items:center; justify-content:center; padding:20px; animation:modalFade .3s ease; }
+  .modal-bg.show { display:flex; }
+  @keyframes modalFade { from{opacity:0} to{opacity:1} }
+  .modal-box { background:var(--card); border-radius:16px; max-width:900px; width:100%; max-height:90vh; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(102,192,244,.2); display:flex; flex-direction:column; animation:modalUp .35s cubic-bezier(.2,.8,.2,1); }
+  @keyframes modalUp { from{opacity:0;transform:translateY(30px) scale(.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 22px; border-bottom:1px solid rgba(102,192,244,.15); }
+  .modal-title { font-size:18px; font-weight:700; color:#fff; }
+  .modal-close { background:transparent; border:none; color:var(--text-dim); font-size:26px; cursor:pointer; width:36px; height:36px; border-radius:50%; transition:.25s; display:flex; align-items:center; justify-content:center; }
+  .modal-close:hover { color:#fff; background:rgba(255,255,255,.1); }
+  .modal-image { background:#0d131c; display:flex; align-items:center; justify-content:center; overflow:hidden; max-height:60vh; }
+  .modal-image img { width:100%; height:auto; max-height:60vh; object-fit:contain; display:block; }
+  .modal-footer { padding:16px 22px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; border-top:1px solid rgba(102,192,244,.15); }
+  .modal-btn { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:8px; border:none; font-size:15px; font-weight:700; cursor:pointer; text-decoration:none; transition:.25s; white-space:nowrap; }
+  .modal-btn.download { background:linear-gradient(90deg,#4c9c3c,var(--green)); color:#fff; box-shadow:0 4px 12px rgba(111,191,74,.3); }
+  .modal-btn.download:hover { filter:brightness(1.15); transform:translateY(-2px); }
+  .modal-btn.again { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; box-shadow:0 4px 12px rgba(102,192,244,.3); }
+  .modal-btn.again:hover { filter:brightness(1.15); transform:translateY(-2px); }
+  @media (max-width:640px) {
+    .random-btn { width:52px; height:52px; font-size:24px; bottom:16px; right:16px; }
+    .modal-footer { flex-direction:column; }
+    .modal-btn { width:100%; justify-content:center; }
+  }
 </style>
 </head>
 <body>
@@ -110,6 +137,26 @@
 </main>
 
 <footer>© <span id="year"></span> OBOI.TOP — Created by <b>Ash</b> & DeepSeek</footer>
+
+<!-- Кнопка Рандом -->
+<button class="random-btn" id="randomBtn" title="Случайная обоина">🎲</button>
+
+<!-- Модалка -->
+<div class="modal-bg" id="randomModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">🎲 Случайная обоина</span>
+      <button class="modal-close" id="modalClose">✖</button>
+    </div>
+    <div class="modal-image">
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-footer">
+      <a class="modal-btn download" id="modalDownload" href="#" download>⬇️ Скачать</a>
+      <button class="modal-btn again" id="modalAgain">🎲 Ещё раз</button>
+    </div>
+  </div>
+</div>
 
 <script>
 document.querySelectorAll('.sub-tab').forEach(tab => {
@@ -251,6 +298,42 @@ document.getElementById('year').textContent = new Date().getFullYear();
 renderFilters();
 render(wallpapers);
 renderMisc(miscWallpapers);
+
+/* ===== РАНДОМ ===== */
+(function() {
+  const modal = document.getElementById('randomModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalDownload = document.getElementById('modalDownload');
+  const modalAgain = document.getElementById('modalAgain');
+  const modalClose = document.getElementById('modalClose');
+  const randomBtn = document.getElementById('randomBtn');
+
+  function showRandom() {
+    const activePanel = document.querySelector('.panel.active').id;
+    const pool = (activePanel === 'panel-cs') ? wallpapers : miscWallpapers;
+    if (!pool.length) return;
+    const item = pool[Math.floor(Math.random() * pool.length)];
+    modalImg.src = item.img;
+    modalImg.alt = item.title;
+    modalDownload.href = item.download;
+    modalDownload.download = item.title + '.jpg';
+  }
+
+  randomBtn.addEventListener('click', () => {
+    showRandom();
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  });
+  modalAgain.addEventListener('click', showRandom);
+  function closeModal() {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    modalImg.src = '';
+  }
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+})();
 </script>
 
 <script>
