@@ -150,7 +150,7 @@
     <div class="empty" id="empty">😔 Ничего не найдено</div>
   </div>
 
-  <!-- Разное (тут теперь 33 обоины) -->
+  <!-- Разное -->
   <div class="panel" id="panel-misc">
     <div class="page-title">
       <h1>🎨 Разное</h1>
@@ -240,7 +240,7 @@ categories.forEach(cat => {
   });
 });
 
-// Данные Разное (20 старых + 13 новых = 33)
+// Данные Разное (33 файла)
 const MISC_COUNT = 33;
 const miscWallpapers = [];
 for (let i = 1; i <= MISC_COUNT; i++) {
@@ -253,16 +253,16 @@ for (let i = 1; i <= MISC_COUNT; i++) {
   });
 }
 
-// Данные Windows
+// Данные Windows (Расширение .PNG, как ты наскринил!)
 const winCategories = [
-  { name:"Windows 11", folder:"Windows 11", count: 10 },
-  { name:"Windows 10", folder:"Windows 10", count: 10 },
-  { name:"Windows 7",  folder:"Windows 7",  count: 10 }
+  { name:"Windows 11", folder:"Windows 11", count: 18 },
+  { name:"Windows 10", folder:"Windows 10", count: 6 },
+  { name:"Windows 7",  folder:"Windows 7",  count: 61 }
 ];
 const winWallpapers = [];
 winCategories.forEach(cat => {
   for (let i = 1; i <= cat.count; i++) {
-    const fileName = "1 (" + i + ").jpg";
+    const fileName = "1 (" + i + ").png"; // Ищем PNG!
     winWallpapers.push({
       id: "win_" + cat.folder + "_" + i,
       title: cat.name + " " + i,
@@ -302,7 +302,7 @@ function createCard(w) {
     <div class="card-info"><span class="card-title">${w.title}</span><span class="card-cat">${w.cat || 'РАЗНОЕ'}</span></div>`;
   card.addEventListener('click', () => {
     const a = document.createElement('a');
-    a.href = w.download; a.download = w.title + '.jpg';
+    a.href = w.download; a.download = w.title + w.download.substring(w.download.lastIndexOf('.'));
     document.body.appendChild(a); a.click(); a.remove();
   });
   return card;
