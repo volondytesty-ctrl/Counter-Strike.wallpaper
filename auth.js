@@ -3,8 +3,9 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6XluaAFSDMBYuW4n8DEApxxVCLU8rZhQ",
+  apiKey: "AIzaSyA6XluaAFSDMBYWu4n8DEApxxVClU8rZhQ",
   authDomain: "oboi-top.firebaseapp.com",
+  databaseURL: "https://oboi-top-default-rtdb.firebaseio.com",
   projectId: "oboi-top",
   storageBucket: "oboi-top.firebasestorage.app",
   messagingSenderId: "552402951555",
@@ -15,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// Глобальные переменные для доступа из других скриптов
+// Глобальные переменные для доступа из HTML
 window.firebaseAuth = auth;
 window.firebaseDB = db;
 window.firebaseFuncs = {
@@ -28,7 +29,7 @@ window.firebaseFuncs = {
   ref, set, get, child
 };
 
-// Делаем функции доступными глобально для вызова из HTML
+// Делаем функции доступными глобально
 window.registerUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
 window.loginUser = (email, password) => signInWithEmailAndPassword(auth, email, password);
 window.logoutUser = () => signOut(auth);
