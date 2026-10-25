@@ -3,7 +3,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6XluaAFSDMBYWu4n8DEApxxVClU8rZhQ",
+  apiKey: "AIzaSyA6XluaAfSDMBYWu4n8DEApxxVClU8rZhQ",
   authDomain: "oboi-top.firebaseapp.com",
   databaseURL: "https://oboi-top-default-rtdb.firebaseio.com",
   projectId: "oboi-top",
