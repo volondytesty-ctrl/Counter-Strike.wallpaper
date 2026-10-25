@@ -132,7 +132,6 @@
 
 <nav class="sub-tabs">
   <button class="sub-tab active" data-panel="cs">🎮 Counter Strike 2</button>
-  <button class="sub-tab" data-panel="misc">🎨 Разное</button>
   <button class="sub-tab" data-panel="windows">🖥️ Windows</button>
 </nav>
 
@@ -145,15 +144,6 @@
     <div class="filters" id="filters"></div>
     <div class="grid" id="grid"></div>
     <div class="empty" id="empty">😔 Ничего не найдено</div>
-  </div>
-
-  <div class="panel" id="panel-misc">
-    <div class="page-title">
-      <h1>🎨 Разное</h1>
-      <p>Обои из Pinterest и просто красивые обои.</p>
-    </div>
-    <div class="grid" id="misc-grid"></div>
-    <div class="empty" id="misc-empty">😔 Ничего не найдено</div>
   </div>
 
   <div class="panel" id="panel-windows">
@@ -232,17 +222,6 @@ categories.forEach(cat => {
   });
 });
 
-const MISC_COUNT = 33;
-const miscWallpapers = [];
-for (let i = 1; i <= MISC_COUNT; i++) {
-  miscWallpapers.push({
-    id: "Разное_" + i,
-    title: "Разное " + i,
-    imgBase: "wallpaper/" + encodeURIComponent("Разное") + "/" + encodeURIComponent("1 (" + i + ")"),
-    ext: ".jpg"
-  });
-}
-
 const winCategories = [
   { name:"Windows 11", folder:"Windows 11", count: 18 },
   { name:"Windows 10", folder:"Windows 10", count: 6 },
@@ -268,8 +247,6 @@ const grid = document.getElementById('grid');
 const empty = document.getElementById('empty');
 const filtersEl = document.getElementById('filters');
 const searchInput = document.getElementById('search');
-const miscGrid = document.getElementById('misc-grid');
-const miscEmpty = document.getElementById('misc-empty');
 const winGrid = document.getElementById('win-grid');
 const winFiltersEl = document.getElementById('win-filters');
 const winEmpty = document.getElementById('win-empty');
@@ -281,7 +258,6 @@ function createCard(w) {
   const card = document.createElement('div');
   card.className = 'card';
   
-  // Умная подстановка: изначально ставим то, что в ext. Если картинка не грузится, пробуем другое.
   const primaryExt = w.ext;
   const secondaryExt = (primaryExt === '.jpg') ? '.png' : '.jpg';
   
@@ -310,13 +286,6 @@ function render(list) {
   if (!list.length) { empty.classList.add('show'); return; }
   empty.classList.remove('show');
   list.forEach(w => grid.appendChild(createCard(w)));
-}
-
-function renderMisc(list) {
-  miscGrid.innerHTML = '';
-  if (!list.length) { miscEmpty.classList.add('show'); return; }
-  miscEmpty.classList.remove('show');
-  list.forEach(w => miscGrid.appendChild(createCard(w)));
 }
 
 function renderWin(list) {
@@ -368,7 +337,6 @@ searchInput.addEventListener('input', applyFilters);
 document.getElementById('year').textContent = new Date().getFullYear();
 renderFilters();
 render(wallpapers);
-renderMisc(miscWallpapers);
 renderWinFilters();
 renderWin(winWallpapers);
 
@@ -417,7 +385,6 @@ function initAuth() {
       document.getElementById('loginBtn').onclick = () => authModal.classList.add('show');
     }
     applyFilters();
-    renderMisc(miscWallpapers);
     applyWinFilters();
   });
 
