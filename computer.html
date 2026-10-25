@@ -101,6 +101,10 @@
   .auth-divider::before, .auth-divider::after { content:''; position:absolute; top:50%; width:40%; height:1px; background:rgba(255,255,255,.1); }
   .auth-divider::before { left:0; } .auth-divider::after { right:0; }
 
+  /* Кубик */
+  .dice-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 300px; background: #0d131c; }
+  .dice-video { width: 150px; height: 150px; object-fit: contain; }
+
   @media (max-width:640px) {
     header { padding:10px 14px; gap:10px; }
     .banner { height:38px; }
@@ -158,6 +162,29 @@
 </main>
 
 <footer>© <span id="year"></span> OBOI.TOP — Created by <b>Ash</b> & DeepSeek</footer>
+
+<!-- Кнопка Рандом -->
+<button class="random-btn" id="randomBtn" style="position:fixed; bottom:24px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); border:none; color:#fff; font-size:28px; cursor:pointer; box-shadow:0 8px 24px rgba(102,192,244,.4); z-index:500; display:flex; align-items:center; justify-content:center;" title="Случайная обоина">🎲</button>
+
+<!-- Модалка рандома -->
+<div class="modal-bg" id="randomModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">🎲 Случайная обоина</span>
+      <button class="modal-close" id="modalClose">✖</button>
+    </div>
+    <div class="modal-image" id="modalImageWrap">
+      <div class="dice-container" id="diceAnim" style="display:none;">
+        <video id="diceVideo" class="dice-video" src="dice.mp4" muted playsinline></video>
+      </div>
+      <img id="modalImg" src="" alt="" style="display:none; width:100%; height:auto; max-height:60vh; object-fit:contain;">
+    </div>
+    <div class="modal-footer" style="padding:16px 22px; display:flex; gap:10px; justify-content:center; border-top:1px solid rgba(102,192,244,.15);">
+      <a class="modal-btn download" id="modalDownload" href="#" download style="background:linear-gradient(90deg,#4c9c3c,var(--green)); color:#fff; padding:12px 24px; border-radius:8px; font-weight:700; text-decoration:none;">⬇️ Скачать</a>
+      <button class="modal-btn again" id="modalAgain" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; padding:12px 24px; border-radius:8px; font-weight:700; border:none; cursor:pointer;">🎲 Ещё раз</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-bg" id="authModal">
   <div class="modal-box">
@@ -257,10 +284,8 @@ function createCard(w) {
   const isLiked = userLikes[w.id] === true;
   const card = document.createElement('div');
   card.className = 'card';
-  
   const primaryExt = w.ext;
   const secondaryExt = (primaryExt === '.jpg') ? '.png' : '.jpg';
-  
   const imgSrc = w.imgBase + primaryExt;
   const fallbackSrc = w.imgBase + secondaryExt;
 
@@ -281,19 +306,8 @@ function createCard(w) {
   return card;
 }
 
-function render(list) {
-  grid.innerHTML = '';
-  if (!list.length) { empty.classList.add('show'); return; }
-  empty.classList.remove('show');
-  list.forEach(w => grid.appendChild(createCard(w)));
-}
-
-function renderWin(list) {
-  winGrid.innerHTML = '';
-  if (!list.length) { winEmpty.classList.add('show'); return; }
-  winEmpty.classList.remove('show');
-  list.forEach(w => winGrid.appendChild(createCard(w)));
-}
+function render(list) { grid.innerHTML = ''; if (!list.length) { empty.classList.add('show'); return; } empty.classList.remove('show'); list.forEach(w => grid.appendChild(createCard(w))); }
+function renderWin(list) { winGrid.innerHTML = ''; if (!list.length) { winEmpty.classList.add('show'); return; } winEmpty.classList.remove('show'); list.forEach(w => winGrid.appendChild(createCard(w))); }
 
 function renderFilters() {
   filtersEl.innerHTML = '';
@@ -319,26 +333,12 @@ function renderWinFilters() {
   });
 }
 
-function applyFilters() {
-  const q = searchInput.value.trim().toLowerCase();
-  let list = wallpapers;
-  if (activeCat !== 'all') list = list.filter(w => w.cat === activeCat);
-  if (q) list = list.filter(w => w.title.toLowerCase().includes(q));
-  render(list);
-}
-
-function applyWinFilters() {
-  let list = winWallpapers;
-  if (activeWinCat !== 'all') list = list.filter(w => w.cat === activeWinCat);
-  renderWin(list);
-}
+function applyFilters() { const q = searchInput.value.trim().toLowerCase(); let list = wallpapers; if (activeCat !== 'all') list = list.filter(w => w.cat === activeCat); if (q) list = list.filter(w => w.title.toLowerCase().includes(q)); render(list); }
+function applyWinFilters() { let list = winWallpapers; if (activeWinCat !== 'all') list = list.filter(w => w.cat === activeWinCat); renderWin(list); }
 
 searchInput.addEventListener('input', applyFilters);
 document.getElementById('year').textContent = new Date().getFullYear();
-renderFilters();
-render(wallpapers);
-renderWinFilters();
-renderWin(winWallpapers);
+renderFilters(); render(wallpapers); renderWinFilters(); renderWin(winWallpapers);
 
 // --- АВТОРИЗАЦИЯ ---
 const authModal = document.getElementById('authModal');
@@ -351,12 +351,10 @@ const authError = document.getElementById('authError');
 const googleBtn = document.getElementById('googleBtn');
 const loginBtn = document.getElementById('loginBtn');
 const authArea = document.getElementById('authArea');
-
 let isRegisterMode = false;
 
 document.getElementById('authClose').onclick = () => authModal.classList.remove('show');
 authModal.onclick = (e) => { if (e.target === authModal) authModal.classList.remove('show'); };
-
 loginBtn.onclick = () => { authModal.classList.add('show'); isRegisterMode = false; updateAuthUI(); };
 authToggle.onclick = () => { isRegisterMode = !isRegisterMode; updateAuthUI(); };
 
@@ -369,64 +367,82 @@ function updateAuthUI() {
 
 function initAuth() {
   if (!window.checkAuth) { setTimeout(initAuth, 100); return; }
-  
   window.checkAuth(async (user) => {
     currentUser = user;
     if (user) {
       userLikes = await window.getUserLikes(user.uid) || {};
-      authArea.innerHTML = `
-        <span class="user-email">${user.email}</span>
-        <button class="auth-btn logout" id="logoutBtn">Выйти</button>
-      `;
+      authArea.innerHTML = `<span class="user-email">${user.email}</span><button class="auth-btn logout" id="logoutBtn">Выйти</button>`;
       document.getElementById('logoutBtn').onclick = () => window.logoutUser();
     } else {
       userLikes = {};
       authArea.innerHTML = `<button class="auth-btn" id="loginBtn">Войти</button>`;
       document.getElementById('loginBtn').onclick = () => authModal.classList.add('show');
     }
-    applyFilters();
-    applyWinFilters();
+    applyFilters(); applyWinFilters();
   });
 
   authSubmit.onclick = async () => {
-    const email = authEmail.value.trim();
-    const pass = authPassword.value;
+    const email = authEmail.value.trim(); const pass = authPassword.value;
     if (!email || !pass) { authError.textContent = 'Заполните все поля'; return; }
     authError.textContent = 'Загрузка...';
     try {
-      if (isRegisterMode) {
-        await window.registerUser(email, pass);
-      } else {
-        await window.loginUser(email, pass);
-      }
+      if (isRegisterMode) await window.registerUser(email, pass); else await window.loginUser(email, pass);
       authModal.classList.remove('show');
-    } catch (e) {
-      authError.textContent = e.message.includes('auth/email-already-in-use') ? 'Этот email уже занят' : 
-                             e.message.includes('auth/wrong-password') ? 'Неверный пароль' :
-                             e.message.includes('auth/invalid-credential') ? 'Неверный email или пароль' :
-                             e.message.includes('auth/weak-password') ? 'Пароль слишком короткий (мин. 6)' :
-                             'Ошибка: ' + e.message;
-    }
+    } catch (e) { authError.textContent = 'Ошибка: ' + e.message; }
   };
 
-  googleBtn.onclick = async () => {
-    try {
-      await window.loginGoogle();
-      authModal.classList.remove('show');
-    } catch (e) {
-      authError.textContent = 'Ошибка Google: ' + e.message;
-    }
-  };
+  googleBtn.onclick = async () => { try { await window.loginGoogle(); authModal.classList.remove('show'); } catch (e) { authError.textContent = 'Ошибка Google: ' + e.message; } };
 }
 initAuth();
 
-// --- ЛАЙКИ ---
+// --- РАНДОМ С ВИДЕО ---
+function showRandom() {
+  const activePanel = document.querySelector('.panel.active').id;
+  let pool = [];
+  if (activePanel === 'panel-cs') pool = wallpapers;
+  else if (activePanel === 'panel-windows') pool = winWallpapers;
+  if (!pool || !pool.length) return;
+  const item = pool[Math.floor(Math.random() * pool.length)];
+
+  const modalImg = document.getElementById('modalImg');
+  const diceAnim = document.getElementById('diceAnim');
+  const diceVideo = document.getElementById('diceVideo');
+  const modalFooter = document.querySelector('#randomModal .modal-footer');
+  const modalTitle = document.querySelector('#randomModal .modal-title');
+
+  modalImg.style.display = 'none';
+  modalFooter.style.visibility = 'hidden';
+  modalTitle.textContent = '🎲 Бросаем кубик...';
+  diceAnim.style.display = 'flex';
+  
+  diceVideo.currentTime = 0;
+  diceVideo.play();
+
+  const fallbackTimer = setTimeout(showImage, 1200); 
+  function showImage() {
+    clearTimeout(fallbackTimer);
+    diceAnim.style.display = 'none';
+    diceVideo.pause(); 
+    modalImg.src = item.imgBase + (item.ext || ".jpg");
+    modalImg.style.display = 'block';
+    document.getElementById('modalDownload').href = item.imgBase + (item.ext || ".jpg");
+    modalFooter.style.visibility = 'visible';
+    modalTitle.textContent = '🎲 Случайная обоина';
+  }
+  diceVideo.onended = showImage;
+}
+
+const randomModal = document.getElementById('randomModal');
+document.getElementById('randomBtn').onclick = () => { randomModal.classList.add('show'); showRandom(); };
+document.getElementById('modalClose').onclick = () => randomModal.classList.remove('show');
+document.getElementById('modalAgain').onclick = showRandom;
+randomModal.onclick = (e) => { if (e.target === randomModal) randomModal.classList.remove('show'); };
+
 window.toggleLike = async (id) => {
   if (!currentUser) { alert('Войдите, чтобы лайкать обои!'); return; }
   const newState = !userLikes[id];
   userLikes[id] = newState;
   await window.saveLike(currentUser.uid, id, newState);
-  
   const btn = document.querySelector(`.like-btn[data-id="${id}"]`);
   if (btn) btn.classList.toggle('liked', newState);
 };
