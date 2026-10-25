@@ -239,14 +239,14 @@ for (let i = 1; i <= MISC_COUNT; i++) {
     id: "Разное_" + i,
     title: "Разное " + i,
     imgBase: "wallpaper/" + encodeURIComponent("Разное") + "/" + encodeURIComponent("1 (" + i + ")"),
-    ext: "" // Автоопределение расширения
+    ext: ".jpg"
   });
 }
 
 const winCategories = [
   { name:"Windows 11", folder:"Windows 11", count: 18 },
   { name:"Windows 10", folder:"Windows 10", count: 6 },
-  { name:"Windows 7",  folder:"Windows 7",  count: 31 } // <-- ПОМЕНЯЛ НА 31
+  { name:"Windows 7",  folder:"Windows 7",  count: 31 }
 ];
 const winWallpapers = [];
 winCategories.forEach(cat => {
@@ -256,7 +256,7 @@ winCategories.forEach(cat => {
       title: cat.name + " " + i,
       cat: cat.name,
       imgBase: "wallpaper/Windows/" + encodeURIComponent(cat.folder) + "/" + encodeURIComponent("1 (" + i + ")"),
-      ext: "" // Автоопределение расширения
+      ext: ".png"
     });
   }
 });
@@ -281,21 +281,25 @@ function createCard(w) {
   const card = document.createElement('div');
   card.className = 'card';
   
-  let imgSrc = w.imgBase + (w.ext || ".png");
-  let downloadSrc = w.imgBase + (w.ext || ".png");
+  // Умная подстановка: изначально ставим то, что в ext. Если картинка не грузится, пробуем другое.
+  const primaryExt = w.ext;
+  const secondaryExt = (primaryExt === '.jpg') ? '.png' : '.jpg';
+  
+  const imgSrc = w.imgBase + primaryExt;
+  const fallbackSrc = w.imgBase + secondaryExt;
 
   card.innerHTML = `
     <div class="thumb">
-      <img src="${imgSrc}" alt="${w.title}" loading="lazy" onerror="this.onerror=null; this.src='${w.imgBase}.jpg'">
+      <img src="${imgSrc}" alt="${w.title}" loading="lazy" onerror="this.onerror=null; this.src='${fallbackSrc}'">
       ${currentUser ? `<button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${w.id}" onclick="event.stopPropagation(); toggleLike('${w.id}')"></button>` : ''}
-      <div class="overlay"><a class="download-btn" href="${downloadSrc}" download onclick="event.stopPropagation()">⬇️ Скачать</a></div>
+      <div class="overlay"><a class="download-btn" href="${imgSrc}" download onclick="event.stopPropagation()">⬇️ Скачать</a></div>
     </div>
     <div class="card-info"><span class="card-title">${w.title}</span><span class="card-cat">${w.cat || 'РАЗНОЕ'}</span></div>`;
     
   card.addEventListener('click', () => {
     const a = document.createElement('a');
-    a.href = downloadSrc; 
-    a.download = w.title + (w.ext || ".png");
+    a.href = imgSrc; 
+    a.download = w.title + primaryExt;
     document.body.appendChild(a); a.click(); a.remove();
   });
   return card;
