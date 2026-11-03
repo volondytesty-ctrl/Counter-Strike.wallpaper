@@ -160,7 +160,7 @@
     <button class="auth-btn" id="loginBtn">Войти</button>
     <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
   </div>
-  <div class="search-box"><input type="text" id="search" placeholder="Поиск обоев..." autocomplete="off"></div>
+  <div class="search-box"><input type="text" id="my_search_123" placeholder="Поиск обоев..." autocomplete="off"></div>
 </header>
 
 <main class="container">
@@ -284,7 +284,7 @@ let userLikes = {};
 
 const grid = document.getElementById('grid');
 const empty = document.getElementById('empty');
-const searchInput = document.getElementById('search');
+const searchInput = document.getElementById('my_search_123');
 
 function createCard(w) {
   const isLiked = userLikes[w.id] === true;
