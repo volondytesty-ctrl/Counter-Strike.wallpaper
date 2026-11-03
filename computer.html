@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OBOI.TOP — Обои для компьютера</title>
+<title>OBOI.TOP — Wallpapers</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#66c0f4">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -27,8 +27,10 @@
   .auth-btn:hover { filter:brightness(1.15); transform:translateY(-2px); }
   .auth-btn.logout { background:transparent; border:1px solid rgba(255,100,100,.5); color:#ff6b6b; }
   .auth-btn.logout:hover { background:rgba(255,100,100,.1); }
-  .settings-btn { width:40px; height:40px; border-radius:10px; background:rgba(22,32,45,.9); border:1px solid rgba(102,192,244,.3); color:var(--text); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.25s; flex-shrink:0; }
+  .settings-btn, .lang-btn { height:40px; border-radius:10px; background:rgba(22,32,45,.9); border:1px solid rgba(102,192,244,.3); color:var(--text); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.25s; flex-shrink:0; padding:0 12px; font-weight:700; }
+  .settings-btn { width:40px; }
   .settings-btn:hover { border-color:var(--accent); background:rgba(102,192,244,.15); transform:rotate(45deg); }
+  .lang-btn:hover { border-color:var(--accent); background:rgba(102,192,244,.15); }
 
   .sub-tabs { display:flex; gap:8px; justify-content:center; padding:16px 24px 0; flex-wrap:wrap; }
   .sub-tab { padding:10px 22px; border-radius:24px; background:rgba(22,32,45,.7); border:1px solid rgba(102,192,244,.25); color:var(--text-dim); font-size:14px; font-weight:600; cursor:pointer; transition:.25s; }
@@ -120,7 +122,7 @@
   body.light .sub-tab.active { color:#fff; }
   body.light .filter-btn { background:rgba(255,255,255,.7); color:#1a1a2e; }
   body.light .filter-btn.active { color:#fff; }
-  body.light .settings-btn { background:rgba(255,255,255,.9); color:#1a1a2e; }
+  body.light .settings-btn, body.light .lang-btn { background:rgba(255,255,255,.9); color:#1a1a2e; }
   body.light .modal-box { background:#fff; }
   body.light .modal-title { color:#1a1a2e; }
   body.light footer { color:#6a6a7a; }
@@ -166,56 +168,59 @@
 <header>
   <a href="index.html"><img src="banner.png" alt="Ash" class="banner"></a>
   <nav class="nav-tabs">
-    <a href="index.html" class="nav-tab">📖 История</a>
-    <a href="computer.html" class="nav-tab active">💻 Компьютер</a>
-    <a href="phone.html" class="nav-tab">📱 Телефон</a>
-    <a href="tablet.html" class="nav-tab">📟 Планшет</a>
-    <a href="profile.html" class="nav-tab">👤 Профиль</a>
+    <a href="index.html" class="nav-tab" data-i18n="nav_history">📖 История</a>
+    <a href="computer.html" class="nav-tab active" data-i18n="nav_computer">💻 Компьютер</a>
+    <a href="phone.html" class="nav-tab" data-i18n="nav_phone">📱 Телефон</a>
+    <a href="tablet.html" class="nav-tab" data-i18n="nav_tablet">📟 Планшет</a>
+    <a href="profile.html" class="nav-tab" data-i18n="nav_profile">👤 Профиль</a>
   </nav>
-  <div style="display:flex; gap:10px; align-items:center;" id="authArea">
-    <button class="auth-btn" id="loginBtn">Войти</button>
-    <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <div id="authArea">
+      <button class="auth-btn" id="loginBtn" data-i18n="login_btn">Войти</button>
+    </div>
+    <button class="lang-btn" id="langBtn" title="Change Language">RU</button>
+    <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
   </div>
-  <div class="search-box"><input type="text" id="search" placeholder="Поиск обоев..." autocomplete="off"></div>
+  <div class="search-box"><input type="text" id="search" placeholder="Поиск обоев..." data-i18n-placeholder="search_placeholder" autocomplete="off"></div>
 </header>
 
 <nav class="sub-tabs">
-  <button class="sub-tab active" data-panel="cs">🎮 Counter Strike 2</button>
-  <button class="sub-tab" data-panel="windows">🖥️ Windows</button>
+  <button class="sub-tab active" data-panel="cs" data-i18n="sub_cs">🎮 Counter Strike 2</button>
+  <button class="sub-tab" data-panel="windows" data-i18n="sub_win">🖥️ Windows</button>
 </nav>
 
 <main class="container">
   <div class="panel active" id="panel-cs">
     <div class="page-title">
-      <h1>🎮 Обои Counter Strike 2</h1>
-      <p>140 обоев в разрешении 1920×1080. Скачивание в один клик.</p>
+      <h1 data-i18n="title_cs">🎮 Обои Counter Strike 2</h1>
+      <p data-i18n="desc_cs">140 обоев в разрешении 1920×1080. Скачивание в один клик.</p>
     </div>
     <div class="filters" id="filters"></div>
     <div class="grid" id="grid"></div>
-    <div class="empty" id="empty">😔 Ничего не найдено</div>
+    <div class="empty" id="empty" data-i18n="empty">😔 Ничего не найдено</div>
   </div>
 
   <div class="panel" id="panel-windows">
     <div class="page-title">
-      <h1>🖥️ Оригинальные обои Windows</h1>
-      <p>Ностальгия по стандартным обоям. Выбери версию системы.</p>
+      <h1 data-i18n="title_win">🖥️ Оригинальные обои Windows</h1>
+      <p data-i18n="desc_win">Ностальгия по стандартным обоям. Выбери версию системы.</p>
     </div>
     <div class="filters" id="win-filters"></div>
     <div class="grid" id="win-grid"></div>
-    <div class="empty" id="win-empty">😔 Ничего не найдено</div>
+    <div class="empty" id="win-empty" data-i18n="empty">😔 Ничего не найдено</div>
   </div>
 </main>
 
 <footer>© <span id="year"></span> OBOI.TOP — Created by <b>Ash</b> & DeepSeek</footer>
 
 <!-- Кнопка Рандом -->
-<button class="random-btn" id="randomBtn" style="position:fixed; bottom:24px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); border:none; color:#fff; font-size:28px; cursor:pointer; box-shadow:0 8px 24px rgba(102,192,244,.4); z-index:500; display:flex; align-items:center; justify-content:center;" title="Случайная обоина">🎲</button>
+<button class="random-btn" id="randomBtn" style="position:fixed; bottom:24px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); border:none; color:#fff; font-size:28px; cursor:pointer; box-shadow:0 8px 24px rgba(102,192,244,.4); z-index:500; display:flex; align-items:center; justify-content:center;" title="Random Wallpaper">🎲</button>
 
 <!-- Модалка рандома -->
 <div class="modal-bg" id="randomModal">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-title" id="modalTitle">🎲 Случайная обоина</span>
+      <span class="modal-title" id="modalTitle" data-i18n="random_title">🎲 Случайная обоина</span>
       <button class="modal-close" id="modalClose">✖</button>
     </div>
     <div class="modal-image" id="modalImageWrap">
@@ -225,8 +230,8 @@
       <img id="modalImg" src="" alt="" style="display:none; width:100%; height:auto; max-height:60vh; object-fit:contain;">
     </div>
     <div class="modal-footer" style="padding:16px 22px; display:flex; gap:10px; justify-content:center; border-top:1px solid rgba(102,192,244,.15);">
-      <a class="modal-btn download" id="modalDownload" href="#" download style="background:linear-gradient(90deg,#4c9c3c,var(--green)); color:#fff; padding:12px 24px; border-radius:8px; font-weight:700; text-decoration:none;">⬇️ Скачать</a>
-      <button class="modal-btn again" id="modalAgain" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; padding:12px 24px; border-radius:8px; font-weight:700; border:none; cursor:pointer;">🎲 Ещё раз</button>
+      <a class="modal-btn download" id="modalDownload" href="#" download style="background:linear-gradient(90deg,#4c9c3c,var(--green)); color:#fff; padding:12px 24px; border-radius:8px; font-weight:700; text-decoration:none;">⬇️ <span data-i18n="btn_download">Скачать</span></a>
+      <button class="modal-btn again" id="modalAgain" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; padding:12px 24px; border-radius:8px; font-weight:700; border:none; cursor:pointer;">🎲 <span data-i18n="btn_again">Ещё раз</span></button>
     </div>
   </div>
 </div>
@@ -235,26 +240,26 @@
 <div class="modal-bg" id="authModal">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-title" id="authTitle">Вход</span>
+      <span class="modal-title" id="authTitle" data-i18n="auth_title">Вход</span>
       <button class="modal-close" id="authClose">✖</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Email</label>
+        <label data-i18n="auth_email">Email</label>
         <input type="email" id="authEmail" placeholder="you@example.com">
       </div>
       <div class="form-group">
-        <label>Пароль</label>
+        <label data-i18n="auth_pass">Пароль</label>
         <input type="password" id="authPassword" placeholder="Минимум 6 символов">
       </div>
-      <button class="auth-submit" id="authSubmit">Войти</button>
-      <div class="auth-divider">или</div>
+      <button class="auth-submit" id="authSubmit" data-i18n="auth_submit">Войти</button>
+      <div class="auth-divider" data-i18n="auth_or">или</div>
       <button class="google-btn" id="googleBtn">
         <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Войти через Google
+        <span data-i18n="auth_google">Войти через Google</span>
       </button>
       <div class="auth-toggle" id="authToggle">
-        Нет аккаунта? <span>Зарегистрироваться</span>
+        <span data-i18n="auth_no_acc">Нет аккаунта?</span> <span style="color:var(--accent); cursor:pointer; font-weight:600;" data-i18n="auth_reg">Зарегистрироваться</span>
       </div>
       <div class="auth-error" id="authError"></div>
     </div>
@@ -265,20 +270,20 @@
 <div class="settings-bg" id="settingsModal">
   <div class="settings-box">
     <div class="modal-header">
-      <span class="modal-title">⚙️ Настройки</span>
+      <span class="modal-title" data-i18n="settings_title">⚙️ Настройки</span>
       <button class="modal-close" id="settingsClose">✖</button>
     </div>
     <div class="settings-body">
       <div class="setting-item">
-        <div class="setting-label">🌙 Тема</div>
+        <div class="setting-label" data-i18n="set_theme">🌙 Тема</div>
         <div class="setting-options" data-setting="theme">
-          <button class="setting-opt" data-value="dark">Тёмная</button>
-          <button class="setting-opt" data-value="light">Светлая</button>
-          <button class="setting-opt" data-value="system">Системная</button>
+          <button class="setting-opt" data-value="dark" data-i18n="set_theme_dark">Тёмная</button>
+          <button class="setting-opt" data-value="light" data-i18n="set_theme_light">Светлая</button>
+          <button class="setting-opt" data-value="system" data-i18n="set_theme_sys">Системная</button>
         </div>
       </div>
       <div class="setting-item">
-        <div class="setting-label">🎨 Акцентный цвет</div>
+        <div class="setting-label" data-i18n="set_accent">🎨 Акцентный цвет</div>
         <div class="setting-options" data-setting="accent">
           <button class="setting-opt color-dot blue" data-value="blue" title="Синий"></button>
           <button class="setting-opt color-dot purple" data-value="purple" title="Фиолетовый"></button>
@@ -287,11 +292,11 @@
         </div>
       </div>
       <div class="setting-item">
-        <div class="setting-label">📏 Размер карточек</div>
+        <div class="setting-label" data-i18n="set_size">📏 Размер карточек</div>
         <div class="setting-options" data-setting="size">
-          <button class="setting-opt" data-value="small">Маленькие</button>
-          <button class="setting-opt" data-value="medium">Средние</button>
-          <button class="setting-opt" data-value="large">Большие</button>
+          <button class="setting-opt" data-value="small" data-i18n="set_size_small">Маленькие</button>
+          <button class="setting-opt" data-value="medium" data-i18n="set_size_med">Средние</button>
+          <button class="setting-opt" data-value="large" data-i18n="set_size_large">Большие</button>
         </div>
       </div>
     </div>
@@ -301,6 +306,70 @@
 <script type="module" src="auth.js"></script>
 
 <script type="module">
+// --- ПЕРЕВОДЫ ---
+const translations = {
+  ru: {
+    nav_history: "📖 История", nav_computer: "💻 Компьютер", nav_phone: "📱 Телефон", nav_tablet: "📟 Планшет", nav_profile: "👤 Профиль",
+    login_btn: "Войти", search_placeholder: "Поиск обоев...",
+    sub_cs: "🎮 Counter Strike 2", sub_win: "🖥️ Windows",
+    title_cs: "🎮 Обои Counter Strike 2", desc_cs: "140 обоев в разрешении 1920×1080. Скачивание в один клик.",
+    title_win: "🖥️ Оригинальные обои Windows", desc_win: "Ностальгия по стандартным обоям. Выбери версию системы.",
+    empty: "😔 Ничего не найдено",
+    random_title: "🎲 Случайная обоина", btn_download: "Скачать", btn_again: "Ещё раз",
+    auth_title: "Вход", auth_email: "Email", auth_pass: "Пароль", auth_submit: "Войти", auth_or: "или", auth_google: "Войти через Google", auth_no_acc: "Нет аккаунта?", auth_reg: "Зарегистрироваться",
+    settings_title: "⚙️ Настройки", set_theme: "🌙 Тема", set_theme_dark: "Тёмная", set_theme_light: "Светлая", set_theme_sys: "Системная",
+    set_accent: "🎨 Акцентный цвет", set_size: "📏 Размер карточек", set_size_small: "Маленькие", set_size_med: "Средние", set_size_large: "Большие",
+    all: "Все"
+  },
+  en: {
+    nav_history: "📖 History", nav_computer: "💻 PC", nav_phone: "📱 Phone", nav_tablet: "📟 Tablet", nav_profile: "👤 Profile",
+    login_btn: "Log In", search_placeholder: "Search wallpapers...",
+    sub_cs: "🎮 Counter Strike 2", sub_win: "🖥️ Windows",
+    title_cs: "🎮 Counter Strike 2 Wallpapers", desc_cs: "140 wallpapers in 1920×1080. One-click download.",
+    title_win: "🖥️ Original Windows Wallpapers", desc_win: "Nostalgia for standard wallpapers. Choose your OS.",
+    empty: "😔 Nothing found",
+    random_title: "🎲 Random Wallpaper", btn_download: "Download", btn_again: "Roll Again",
+    auth_title: "Log In", auth_email: "Email", auth_pass: "Password", auth_submit: "Log In", auth_or: "or", auth_google: "Sign in with Google", auth_no_acc: "No account?", auth_reg: "Register",
+    settings_title: "⚙️ Settings", set_theme: "🌙 Theme", set_theme_dark: "Dark", set_theme_light: "Light", set_theme_sys: "System",
+    set_accent: "🎨 Accent Color", set_size: "📏 Card Size", set_size_small: "Small", set_size_med: "Medium", set_size_large: "Large",
+    all: "All"
+  }
+};
+
+let currentLang = localStorage.getItem('oboi_lang') || 'ru';
+const langBtn = document.getElementById('langBtn');
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('oboi_lang', lang);
+  document.documentElement.lang = lang;
+  langBtn.textContent = lang.toUpperCase();
+  
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (translations[lang] && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+  
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (translations[lang] && translations[lang][key]) {
+      el.placeholder = translations[lang][key];
+    }
+  });
+  
+  // Обновляем фильтры (они генерируются через JS)
+  renderFilters();
+  renderWinFilters();
+}
+
+langBtn.onclick = () => {
+  const newLang = currentLang === 'ru' ? 'en' : 'ru';
+  applyLanguage(newLang);
+};
+
+// --- ЛОГИКА ОБОЕВ ---
 document.querySelectorAll('.sub-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
@@ -376,7 +445,7 @@ function createCard(w) {
     <div class="thumb">
       <img src="${imgSrc}" alt="${w.title}" loading="lazy" onerror="this.onerror=null; this.src='${fallbackSrc}'">
       ${currentUser ? `<button class="like-btn ${isLiked ? 'liked' : ''}" data-id="${w.id}" onclick="event.stopPropagation(); toggleLike('${w.id}')"></button>` : ''}
-      <div class="overlay"><a class="download-btn" href="${imgSrc}" download onclick="event.stopPropagation()">⬇️ Скачать</a></div>
+      <div class="overlay"><a class="download-btn" href="${imgSrc}" download onclick="event.stopPropagation()">⬇️ <span data-i18n="btn_download">Скачать</span></a></div>
     </div>
     <div class="card-info"><span class="card-title">${w.title}</span><span class="card-cat">${w.cat || 'РАЗНОЕ'}</span></div>`;
     
@@ -386,6 +455,13 @@ function createCard(w) {
     a.download = w.title + primaryExt;
     document.body.appendChild(a); a.click(); a.remove();
   });
+  
+  // Применяем перевод к кнопке внутри карточки
+  setTimeout(() => {
+    const btnSpan = card.querySelector('[data-i18n="btn_download"]');
+    if (btnSpan && translations[currentLang]) btnSpan.textContent = translations[currentLang].btn_download;
+  }, 0);
+  
   return card;
 }
 
@@ -394,7 +470,7 @@ function renderWin(list) { winGrid.innerHTML = ''; if (!list.length) { winEmpty.
 
 function renderFilters() {
   filtersEl.innerHTML = '';
-  const list = [{key:'all', name:'Все'}, ...categories.map(c => ({key:c.name, name:c.name}))];
+  const list = [{key:'all', name: translations[currentLang]?.all || 'Все'}, ...categories.map(c => ({key:c.name, name:c.name}))];
   list.forEach(item => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn' + (item.key === activeCat ? ' active' : '');
@@ -406,7 +482,7 @@ function renderFilters() {
 
 function renderWinFilters() {
   winFiltersEl.innerHTML = '';
-  const list = [{key:'all', name:'Все версии'}, ...winCategories.map(c => ({key:c.name, name:c.name}))];
+  const list = [{key:'all', name: translations[currentLang]?.all || 'Все'}, ...winCategories.map(c => ({key:c.name, name:c.name}))];
   list.forEach(item => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn' + (item.key === activeWinCat ? ' active' : '');
@@ -422,6 +498,7 @@ function applyWinFilters() { let list = winWallpapers; if (activeWinCat !== 'all
 searchInput.addEventListener('input', applyFilters);
 document.getElementById('year').textContent = new Date().getFullYear();
 renderFilters(); render(wallpapers); renderWinFilters(); renderWin(winWallpapers);
+applyLanguage(currentLang);
 
 // --- АВТОРИЗАЦИЯ ---
 const authModal = document.getElementById('authModal');
@@ -454,20 +531,12 @@ function initAuth() {
     currentUser = user;
     if (user) {
       userLikes = await window.getUserLikes(user.uid) || {};
-      authArea.innerHTML = `<span class="user-email">${user.email}</span><button class="auth-btn logout" id="logoutBtn">Выйти</button><button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>`;
+      authArea.innerHTML = `<span class="user-email">${user.email}</span><button class="auth-btn logout" id="logoutBtn">Выйти</button>`;
       document.getElementById('logoutBtn').onclick = () => window.logoutUser();
     } else {
       userLikes = {};
-      authArea.innerHTML = `<button class="auth-btn" id="loginBtn">Войти</button><button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>`;
+      authArea.innerHTML = `<button class="auth-btn" id="loginBtn">Войти</button>`;
       document.getElementById('loginBtn').onclick = () => authModal.classList.add('show');
-    }
-    // Переназначаем кнопку настроек после перерисовки
-    const newSettingsBtn = document.getElementById('settingsBtn');
-    if (newSettingsBtn) {
-      newSettingsBtn.onclick = () => { 
-        const modal = document.getElementById('settingsModal');
-        if (modal) { modal.classList.add('show'); document.body.style.overflow='hidden'; }
-      };
     }
     applyFilters(); applyWinFilters();
   });
@@ -518,7 +587,7 @@ function showRandom() {
     modalImg.style.display = 'block';
     document.getElementById('modalDownload').href = item.imgBase + (item.ext || ".jpg");
     modalFooter.style.visibility = 'visible';
-    modalTitle.textContent = '🎲 Случайная обоина';
+    modalTitle.textContent = translations[currentLang]?.random_title || '🎲 Случайная обоина';
   }
   diceVideo.onended = showImage;
 }
@@ -562,17 +631,10 @@ window.toggleLike = async (id) => {
   }
   let s = load(); apply(s);
   const modal = document.getElementById('settingsModal');
-  
-  // Функция для назначения клика (так как кнопка пересоздается при авторизации)
-  window.bindSettingsBtn = function() {
-    const btn = document.getElementById('settingsBtn');
-    if (btn) btn.onclick = () => { modal.classList.add('show'); document.body.style.overflow='hidden'; };
-  };
-  window.bindSettingsBtn(); // Первый запуск
-  
+  document.getElementById('settingsBtn').addEventListener('click', () => { modal.classList.add('show'); document.body.style.overflow='hidden'; });
   function close(){ modal.classList.remove('show'); document.body.style.overflow=''; }
-  document.getElementById('settingsClose').onclick = close;
-  modal.onclick = e => { if (e.target === modal) close(); };
+  document.getElementById('settingsClose').addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   document.querySelectorAll('.setting-options').forEach(g => {
     g.querySelectorAll('.setting-opt').forEach(btn => {
