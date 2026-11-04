@@ -354,7 +354,7 @@ function initAuth() {
     currentUser = user;
     if (user) {
       userLikes = await window.getUserLikes(user.uid) || {};
-      authArea.innerHTML = `<span class="user-email">${user.email}</span><button class="auth-btn logout" id="logoutBtn">Выйти</button><button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>`;
+      authArea.innerHTML = `<button class="auth-btn logout" id="logoutBtn">Выйти</button>`;><button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>`;
       document.getElementById('logoutBtn').onclick = () => window.logoutUser();
     } else {
       userLikes = {};
