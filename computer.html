@@ -22,15 +22,13 @@
   .nav-tab.active { color:#fff; background:linear-gradient(90deg,rgba(102,192,244,.25),rgba(166,75,255,.25)); border-color:rgba(102,192,244,.4); }
   
   .auth-area { display:flex; gap:10px; align-items:center; }
-  .user-email { font-size:13px; color:var(--accent); font-weight:600; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .user-email { display:none; }
   .auth-btn { padding:8px 16px; border-radius:6px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); border:none; color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:.25s; white-space:nowrap; }
   .auth-btn:hover { filter:brightness(1.15); transform:translateY(-2px); }
   .auth-btn.logout { background:transparent; border:1px solid rgba(255,100,100,.5); color:#ff6b6b; }
   .auth-btn.logout:hover { background:rgba(255,100,100,.1); }
-  .settings-btn, .lang-btn { height:40px; border-radius:10px; background:rgba(22,32,45,.9); border:1px solid rgba(102,192,244,.3); color:var(--text); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.25s; flex-shrink:0; padding:0 12px; font-weight:700; }
-  .settings-btn { width:40px; }
+  .settings-btn { width:40px; height:40px; border-radius:10px; background:rgba(22,32,45,.9); border:1px solid rgba(102,192,244,.3); color:var(--text); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.25s; flex-shrink:0; }
   .settings-btn:hover { border-color:var(--accent); background:rgba(102,192,244,.15); transform:rotate(45deg); }
-  .lang-btn:hover { border-color:var(--accent); background:rgba(102,192,244,.15); }
 
   .sub-tabs { display:flex; gap:8px; justify-content:center; padding:16px 24px 0; flex-wrap:wrap; }
   .sub-tab { padding:10px 22px; border-radius:24px; background:rgba(22,32,45,.7); border:1px solid rgba(102,192,244,.25); color:var(--text-dim); font-size:14px; font-weight:600; cursor:pointer; transition:.25s; }
@@ -122,7 +120,7 @@
   body.light .sub-tab.active { color:#fff; }
   body.light .filter-btn { background:rgba(255,255,255,.7); color:#1a1a2e; }
   body.light .filter-btn.active { color:#fff; }
-  body.light .settings-btn, body.light .lang-btn { background:rgba(255,255,255,.9); color:#1a1a2e; }
+  body.light .settings-btn { background:rgba(255,255,255,.9); color:#1a1a2e; }
   body.light .modal-box { background:#fff; }
   body.light .modal-title { color:#1a1a2e; }
   body.light footer { color:#6a6a7a; }
@@ -178,7 +176,6 @@
     <div id="authArea">
       <button class="auth-btn" id="loginBtn">Войти</button>
     </div>
-    <button class="lang-btn" id="langBtn" title="Change Language">RU</button>
     <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
   </div>
   <div class="search-box"><input type="text" id="my_search_123" placeholder="Поиск обоев..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"></div>
