@@ -27,8 +27,10 @@
   .auth-btn:hover { filter:brightness(1.15); transform:translateY(-2px); }
   .auth-btn.logout { background:transparent; border:1px solid rgba(255,100,100,.5); color:#ff6b6b; }
   .auth-btn.logout:hover { background:rgba(255,100,100,.1); }
-  .settings-btn { width:40px; height:40px; border-radius:10px; background:rgba(22,32,45,.9); border:1px solid rgba(102,192,244,.3); color:var(--text); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.25s; flex-shrink:0; }
+  .settings-btn, .lang-btn { height:40px; border-radius:10px; background:rgba(22,32,45,.9); border:1px solid rgba(102,192,244,.3); color:var(--text); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.25s; flex-shrink:0; padding:0 12px; font-weight:700; }
+  .settings-btn { width:40px; }
   .settings-btn:hover { border-color:var(--accent); background:rgba(102,192,244,.15); transform:rotate(45deg); }
+  .lang-btn:hover { border-color:var(--accent); background:rgba(102,192,244,.15); }
 
   .search-box { flex:1; max-width:320px; position:relative; min-width:180px; }
   .search-box input { width:100%; padding:10px 16px 10px 40px; border-radius:24px; border:1px solid rgba(102,192,244,.25); background:rgba(22,32,45,.9); color:var(--text); font-size:14px; outline:none; transition:.25s; }
@@ -104,7 +106,7 @@
   body.light .nav-tab { color:#6a6a7a; }
   body.light .nav-tab:hover { color:#1a1a2e; background:rgba(102,192,244,.15); }
   body.light .nav-tab.active { color:#fff; }
-  body.light .settings-btn { background:rgba(255,255,255,.9); color:#1a1a2e; }
+  body.light .settings-btn, body.light .lang-btn { background:rgba(255,255,255,.9); color:#1a1a2e; }
   body.light .modal-box { background:#fff; }
   body.light .modal-title { color:#1a1a2e; }
   body.light footer { color:#6a6a7a; }
@@ -156,11 +158,14 @@
     <a href="tablet.html" class="nav-tab active">📟 Планшет</a>
     <a href="profile.html" class="nav-tab">👤 Профиль</a>
   </nav>
-  <div style="display:flex; gap:10px; align-items:center;" id="authArea">
-    <button class="auth-btn" id="loginBtn">Войти</button>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <div id="authArea">
+      <button class="auth-btn" id="loginBtn">Войти</button>
+    </div>
+    <button class="lang-btn" id="langBtn" title="Change Language">RU</button>
     <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
   </div>
-  <div class="search-box"><input type="text" id="my_search_123" placeholder="Поиск обоев..." autocomplete="off"></div>
+  <div class="search-box"><input type="text" id="my_search_123" placeholder="Поиск обоев..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"></div>
 </header>
 
 <main class="container">
@@ -354,20 +359,12 @@ function initAuth() {
     currentUser = user;
     if (user) {
       userLikes = await window.getUserLikes(user.uid) || {};
-      authArea.innerHTML = `<button class="auth-btn logout" id="logoutBtn">Выйти</button>`;><button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>`;
+      authArea.innerHTML = `<button class="auth-btn logout" id="logoutBtn">Выйти</button>`;
       document.getElementById('logoutBtn').onclick = () => window.logoutUser();
     } else {
       userLikes = {};
-      authArea.innerHTML = `<button class="auth-btn" id="loginBtn">Войти</button><button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>`;
+      authArea.innerHTML = `<button class="auth-btn" id="loginBtn">Войти</button>`;
       document.getElementById('loginBtn').onclick = () => authModal.classList.add('show');
-    }
-    // Переназначаем кнопку настроек после перерисовки
-    const newSettingsBtn = document.getElementById('settingsBtn');
-    if (newSettingsBtn) {
-      newSettingsBtn.onclick = () => { 
-        const modal = document.getElementById('settingsModal');
-        if (modal) { modal.classList.add('show'); document.body.style.overflow='hidden'; }
-      };
     }
     applyFilters();
   });
@@ -457,16 +454,10 @@ window.toggleLike = async (id) => {
   }
   let s = load(); apply(s);
   const modal = document.getElementById('settingsModal');
-  
-  window.bindSettingsBtn = function() {
-    const btn = document.getElementById('settingsBtn');
-    if (btn) btn.onclick = () => { modal.classList.add('show'); document.body.style.overflow='hidden'; };
-  };
-  window.bindSettingsBtn();
-  
+  document.getElementById('settingsBtn').addEventListener('click', () => { modal.classList.add('show'); document.body.style.overflow='hidden'; });
   function close(){ modal.classList.remove('show'); document.body.style.overflow=''; }
-  document.getElementById('settingsClose').onclick = close;
-  modal.onclick = e => { if (e.target === modal) close(); };
+  document.getElementById('settingsClose').addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   document.querySelectorAll('.setting-options').forEach(g => {
     g.querySelectorAll('.setting-opt').forEach(btn => {
