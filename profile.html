@@ -9,6 +9,8 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OBOI.TOP">
+<!-- Подключаем библиотеку для ZIP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root { --bg-1:#0a0a0f; --bg-2:#14121f; --bg-3:#1a1a2e; --accent:#66c0f4; --accent-2:#a64bff; --card:#16202d; --card-hover:#1e2f42; --text:#c7d5e0; --text-dim:#8f98a0; --green:#6fbf4a; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -34,9 +36,13 @@
   .page-title h1 { font-size:clamp(24px,4vw,38px); font-weight:900; margin-bottom:10px; background:linear-gradient(90deg,var(--text),var(--accent),var(--accent-2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .page-title p { color:var(--text-dim); font-size:15px; }
   
-  .profile-info { text-align:center; margin-bottom:40px; background:rgba(22,32,45,.5); border:1px solid rgba(102,192,244,.15); padding:20px; border-radius:12px; display:inline-block; }
+  .profile-info { text-align:center; margin-bottom:30px; background:rgba(22,32,45,.5); border:1px solid rgba(102,192,244,.15); padding:20px; border-radius:12px; display:inline-block; }
   .profile-email { font-size:18px; color:#fff; font-weight:700; margin-bottom:6px; }
   .profile-stats { font-size:14px; color:var(--accent); }
+
+  .zip-btn { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(90deg,#4c9c3c,var(--green)); color:#fff; border:none; padding:12px 24px; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; transition:.25s; margin-top:15px; box-shadow:0 4px 12px rgba(111,191,74,.3); }
+  .zip-btn:hover { filter:brightness(1.15); transform:translateY(-2px); }
+  .zip-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; transition:grid-template-columns .3s; }
   body.size-small .grid { grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
@@ -160,6 +166,7 @@
     <div class="profile-info">
       <div class="profile-email" id="userEmailText"></div>
       <div class="profile-stats" id="userStatsText"></div>
+      <button class="zip-btn" id="zipDownloadBtn">📦 Скачать всё избранное (ZIP)</button>
     </div>
     <h1>Мои избранные обои</h1>
     <p>Все обои, которые вы лайкнули, хранятся здесь.</p>
@@ -255,6 +262,7 @@ const loginPrompt = document.getElementById('loginPrompt');
 const profileHeader = document.getElementById('profileHeader');
 const userEmailText = document.getElementById('userEmailText');
 const userStatsText = document.getElementById('userStatsText');
+const zipBtn = document.getElementById('zipDownloadBtn');
 
 const allWallpapers = [];
 
@@ -358,6 +366,9 @@ function renderLikes() {
   }
   empty.classList.remove('show');
   likedWallpapers.forEach(w => grid.appendChild(createCard(w)));
+  
+  // Обновляем текст кнопки ZIP
+  zipBtn.textContent = `📦 Скачать всё избранное (${likedWallpapers.length})`;
 }
 
 window.removeLike = async (id) => {
@@ -365,6 +376,52 @@ window.removeLike = async (id) => {
   userLikes[id] = false;
   await window.saveLike(currentUser.uid, id, false);
   renderLikes();
+};
+
+// --- ЛОГИКА ZIP ---
+zipBtn.onclick = async () => {
+  if (!currentUser) return;
+  const likedWallpapers = allWallpapers.filter(w => userLikes[w.id] === true);
+  if (!likedWallpapers.length) return;
+
+  zipBtn.disabled = true;
+  zipBtn.textContent = '⏳ Загрузка...';
+
+  const zip = new JSZip();
+  
+  // Загружаем каждую картинку в архив
+  for (let i = 0; i < likedWallpapers.length; i++) {
+    const w = likedWallpapers[i];
+    try {
+      const response = await fetch(w.img);
+      const blob = await response.blob();
+      // Определяем расширение
+      const ext = w.img.split('.').pop();
+      zip.file(w.title + "." + ext, blob);
+    } catch (e) {
+      console.warn('Не удалось скачать: ' + w.title);
+    }
+    // Обновляем прогресс
+    zipBtn.textContent = `⏳ ${i + 1} / ${likedWallpapers.length}`;
+  }
+
+  zipBtn.textContent = '⏳ Создаем архив...';
+  
+  try {
+    const content = await zip.generateAsync({ type: "blob" });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = "OBOI_TOP_Favorites.zip";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    zipBtn.textContent = '✅ Скачано!';
+    setTimeout(() => { zipBtn.textContent = `📦 Скачать всё избранное (${likedWallpapers.length})`; zipBtn.disabled = false; }, 3000);
+  } catch (e) {
+    alert('Ошибка при создании архива. Попробуйте еще раз.');
+    zipBtn.textContent = `📦 Скачать всё избранное (${likedWallpapers.length})`;
+    zipBtn.disabled = false;
+  }
 };
 
 // --- АВТОРИЗАЦИЯ ---
