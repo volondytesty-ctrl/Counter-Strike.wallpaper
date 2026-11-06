@@ -54,3 +54,29 @@ window.getUserLikes = async (userId) => {
   }
   return {};
 };
+// Добавление скачивания (счетчик)
+window.incrementDownload = async (wallpaperId) => {
+  try {
+    const downloadRef = ref(db, 'downloads/' + wallpaperId);
+    const snapshot = await get(downloadRef);
+    const currentCount = snapshot.exists() ? snapshot.val() : 0;
+    await set(downloadRef, currentCount + 1);
+  } catch (e) {
+    console.error('Ошибка при обновлении счетчика:', e);
+  }
+};
+
+// Получение всех счетчиков
+window.getAllDownloads = async () => {
+  try {
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, 'downloads'));
+    if (snapshot.exists()) {
+      return snapshot.val();
+    }
+    return {};
+  } catch (e) {
+    console.error('Ошибка при получении счетчиков:', e);
+    return {};
+  }
+};
