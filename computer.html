@@ -183,6 +183,7 @@
 <nav class="sub-tabs">
   <button class="sub-tab active" data-panel="cs">🎮 Counter Strike 2</button>
   <button class="sub-tab" data-panel="windows">🖥️ Windows</button>
+  <button class="sub-tab" data-panel="minecraft">⛏️ Minecraft</button>
 </nav>
 
 <main class="container">
@@ -210,6 +211,15 @@
     <div class="filters" id="win-filters"></div>
     <div class="grid" id="win-grid"></div>
     <div class="empty" id="win-empty">😔 Ничего не найдено</div>
+  </div>
+
+  <div class="panel" id="panel-minecraft">
+    <div class="page-title">
+      <h1>⛏️ Обои Minecraft</h1>
+      <p>Кубический мир. Скачивание в один клик.</p>
+    </div>
+    <div class="grid" id="mc-grid"></div>
+    <div class="empty" id="mc-empty">😔 Ничего не найдено</div>
   </div>
 </main>
 
@@ -357,6 +367,19 @@ winCategories.forEach(cat => {
   }
 });
 
+// Массив для Майнкрафта (пока пустой, ты заполнишь его)
+const mcCount = 47; // ЗАМЕНИ НА КОЛИЧЕСТВО ТВОИХ КАРТИНОК
+const mcWallpapers = [];
+for (let i = 1; i <= mcCount; i++) {
+  mcWallpapers.push({
+    id: "Minecraft_" + i,
+    title: "Майнкрафт " + i,
+    cat: "Minecraft",
+    imgBase: "wallpaper/Minecraft/" + encodeURIComponent("1 (" + i + ")"),
+    ext: ".jpg"
+  });
+}
+
 let currentUser = null;
 let userLikes = {};
 
@@ -367,6 +390,8 @@ const searchInput = document.getElementById('my_search_123');
 const winGrid = document.getElementById('win-grid');
 const winFiltersEl = document.getElementById('win-filters');
 const winEmpty = document.getElementById('win-empty');
+const mcGrid = document.getElementById('mc-grid');
+const mcEmpty = document.getElementById('mc-empty');
 let activeCat = 'all';
 let activeWinCat = 'all';
 
@@ -388,9 +413,7 @@ function createCard(w) {
     <div class="card-info"><span class="card-title">${w.title}</span><span class="card-cat">${w.cat || 'РАЗНОЕ'}</span></div>`;
     
   card.addEventListener('click', () => {
-    // Отправляем счетчик
     if (window.incrementDownload) window.incrementDownload(w.id);
-    
     const a = document.createElement('a');
     a.href = imgSrc; 
     a.download = w.title + primaryExt;
@@ -401,6 +424,7 @@ function createCard(w) {
 
 function render(list) { grid.innerHTML = ''; if (!list.length) { empty.classList.add('show'); return; } empty.classList.remove('show'); list.forEach(w => grid.appendChild(createCard(w))); }
 function renderWin(list) { winGrid.innerHTML = ''; if (!list.length) { winEmpty.classList.add('show'); return; } winEmpty.classList.remove('show'); list.forEach(w => winGrid.appendChild(createCard(w))); }
+function renderMinecraft(list) { mcGrid.innerHTML = ''; if (!list.length) { mcEmpty.classList.add('show'); return; } mcEmpty.classList.remove('show'); list.forEach(w => mcGrid.appendChild(createCard(w))); }
 
 function renderFilters() {
   filtersEl.innerHTML = '';
@@ -431,7 +455,7 @@ function applyWinFilters() { let list = winWallpapers; if (activeWinCat !== 'all
 
 searchInput.addEventListener('input', applyFilters);
 document.getElementById('year').textContent = new Date().getFullYear();
-renderFilters(); render(wallpapers); renderWinFilters(); renderWin(winWallpapers);
+renderFilters(); render(wallpapers); renderWinFilters(); renderWin(winWallpapers); renderMinecraft(mcWallpapers);
 
 // --- АВТОРИЗАЦИЯ ---
 const authModal = document.getElementById('authModal');
@@ -471,7 +495,7 @@ function initAuth() {
       authArea.innerHTML = `<button class="auth-btn" id="loginBtn">Войти</button>`;
       document.getElementById('loginBtn').onclick = () => authModal.classList.add('show');
     }
-    applyFilters(); applyWinFilters();
+    applyFilters(); applyWinFilters(); renderMinecraft(mcWallpapers);
   });
 
   authSubmit.onclick = async () => {
@@ -494,6 +518,8 @@ function showRandom() {
   let pool = [];
   if (activePanel === 'panel-cs') pool = wallpapers;
   else if (activePanel === 'panel-windows') pool = winWallpapers;
+  else if (activePanel === 'panel-minecraft') pool = mcWallpapers;
+  
   if (!pool || !pool.length) return;
   const item = pool[Math.floor(Math.random() * pool.length)];
 
@@ -548,6 +574,7 @@ async function loadTop10() {
   const allWallpapersWithCounts = [];
   wallpapers.forEach(w => allWallpapersWithCounts.push({ ...w, count: downloads[w.id] || 0 }));
   winWallpapers.forEach(w => allWallpapersWithCounts.push({ ...w, count: downloads[w.id] || 0 }));
+  mcWallpapers.forEach(w => allWallpapersWithCounts.push({ ...w, count: downloads[w.id] || 0 }));
 
   allWallpapersWithCounts.sort((a, b) => b.count - a.count);
   const top10 = allWallpapersWithCounts.slice(0, 10).filter(w => w.count > 0);
